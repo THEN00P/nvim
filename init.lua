@@ -66,10 +66,10 @@ vim.opt.cursorline = true
 vim.opt.scrolloff = 10
 
 -- Powershell
-vim.opt.shell = 'pwsh'
-vim.opt.shellcmdflag = '-command'
-vim.opt.shellquote = '\\'
-vim.opt.shellxquote = ''
+-- vim.opt.shell = 'pwsh'
+-- vim.opt.shellcmdflag = '-command'
+-- vim.opt.shellquote = '\\'
+-- vim.opt.shellxquote = ''
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -199,12 +199,12 @@ require('lazy').setup({
       require('which-key').setup()
 
       -- Document existing key chains
-      require('which-key').register {
-        ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
-        ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
-        ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
-        ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
-        ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
+      require('which-key').add {
+        { '<leader>c', group = '[C]ode' },
+        { '<leader>d', group = '[D]ocument' },
+        { '<leader>r', group = '[R]ename' },
+        { '<leader>s', group = '[S]earch' },
+        { '<leader>w', group = '[W]orkspace' },
       }
     end,
   },
@@ -464,8 +464,7 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
-        -- tsserver = {},
-        --
+        tsserver = {},
 
         lua_ls = {
           -- cmd = {...},
@@ -495,12 +494,6 @@ require('lazy').setup({
         },
       }
 
-      -- Ensure the servers and tools above are installed
-      --  To check the current status of installed tools and/or manually install
-      --  other tools, you can run
-      --    :Mason
-      --
-      --  You can press `g?` for help in this menu
       require('mason').setup()
 
       -- You can add other tools here that you want Mason to install
@@ -669,11 +662,41 @@ require('lazy').setup({
     priority = 1000,
     config = function()
       require('monokai-pro').setup {
-        transparent_background = true,
         filter = 'classic',
       }
 
       vim.cmd.colorscheme 'monokai-pro'
+    end,
+  },
+
+  {
+    'nvim-neo-tree/neo-tree.nvim',
+    branch = 'v3.x',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
+      'MunifTanjim/nui.nvim',
+      '3rd/image.nvim', -- Optional image support in preview window: See `# Preview Mode` for more information
+    },
+    config = function()
+      require('neo-tree').setup {
+        close_if_last_window = true,
+        filesystem = {
+          hijack_netrw_behavior = 'disabled',
+        },
+        window = {
+          position = 'right',
+        },
+      }
+      vim.keymap.set('n', '<C-b>', '<CMD>Neotree toggle<CR>', { desc = 'Toggle NeoTree' })
+    end,
+  },
+
+  {
+    'xiyaowong/transparent.nvim',
+    config = function()
+      require('transparent').setup {}
+      require('transparent').clear_prefix 'NeoTree'
     end,
   },
 
@@ -740,19 +763,12 @@ require('lazy').setup({
     end,
   },
 
-  -- Scrollbar
-  -- 0.10+
-  -- {
-  --   'lewis6991/satellite.nvim',
-  --   opts = {
-  --     width = 1,
-  --     winblend = 0,
-  --   },
-  -- },
-  -- 0.9-
   {
     'lewis6991/satellite.nvim',
-    opts = {},
+    opts = {
+      width = 1,
+      winblend = 0,
+    },
   },
 
   -- Highlight text under cursor
